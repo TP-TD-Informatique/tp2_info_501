@@ -124,7 +124,10 @@ int solve(formula_t *F, sol_t *S, watchlist_t *W, activelist_t *A, int BCP) {
         if (A != NULL) { // we may need to update the active list
             // If var was set as a first choice (state 0, 1), we need to remove it from the active list
             // (in states 2, 3, the variable had already been removed)
-            // TODO : gérer la suppression de la liste des variables actives
+            int state = S->State[current_var];
+            if (state == FALSE || state == TRUE) { // == 0 || == 1
+                pop_active(A);
+            }
         }
 
         if (VERBOSE == 3) {
@@ -175,7 +178,10 @@ int backtrack(sol_t *S, watchlist_t *W, activelist_t *A) {
 
         if (A != NULL) {
             // we just removed a variable from the current solution, we may need to put it into the active list
-            // TODO : gérer l'insertion dans la liste des variables actives
+            int sign = SIGN(S->n);
+            if (W->Head[S->n][sign] == EOL) {
+                push_active(S->n, A);
+            }
         }
     }
     // NOTE : si on renvoie -1, c'est qu'il n'était pas possible de revenir en arrière !
@@ -224,7 +230,11 @@ int update_watch_lists(formula_t *F, sol_t *S, watchlist_t *W, activelist_t *A, 
 
         if (A != NULL) {
             // add the variable for the new watching literal in the active list (if it is UNSET and not already active)
-            // TODO : gérer l'insertion dans la liste des variables actives
+            int state = S->State[S->n];
+            int sign = SIGN(F->Lit[S->n]);
+            if (state == UNSET && W->Head[S->n][sign]) {
+                push_active(S->n, A);
+            }
         }
 
         // and update the watch list

@@ -32,7 +32,7 @@ Fichier `queens-20.cnf`
 - **39,633s** version python
 
 Fichier `sudoku-SAT.cnf`
-- **s** version C
+- **1760,67s** soit 29:20,89 version C
 - **1,074s** version python
 
 On en déduit que la simplification des clauses dans l'algorithme DPLL en python fait gagner du temps du fait des clauses en moins à prendre en compte
