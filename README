@@ -17,4 +17,4 @@ Fichier `queens-15.cnf`
 
 Fichier `queens-20.cnf`
 - **201.77s** soit 3:21,78 version naïve
-- **0.007s** version watch list
+- **1.495s** version watch list
