@@ -3,7 +3,7 @@
 // print the formula in CNF
 void print_CNF(formula_t *F) {
     for (int i = 0; i < F->nb_cl; ++i) {
-        for (int j = F->Cl[i]; j < F->Cl[i+1]; ++j) {
+        for (int j = F->Cl[i]; j < F->Cl[i + 1]; ++j) {
             printf("%d ", LIT2INT(F->Lit[j]));
         }
         printf("\n");
@@ -12,9 +12,22 @@ void print_CNF(formula_t *F) {
 
 // check if a solution is indeed a solution
 int is_solution(formula_t *F, sol_t *S) {
-    (void) F; // to remove unused argument warning
-    (void) S; // to remove unused argument warning
-    return 0;
+    for (int i = 0; i < F->nb_cl; ++i) {
+        int t = 0;
+        for (int j = F->Cl[i]; j < F->Cl[i + 1]; ++j) {
+            int state = S->State[VARIABLE(F->Lit[j])];
+            int sign = SIGN(F->Lit[j]);
+            if (sign && (state == TRUE || state == TRUE_WAS_FALSE)) {
+                t = 1;
+            } else if (!sign && (state == FALSE || state == FALSE_WAS_TRUE)) {
+                t = 1;
+            }
+        }
+        if (t == 0) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 int check_sol(formula_t *F, sol_t *S) {
