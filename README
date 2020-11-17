@@ -1,0 +1,10 @@
+# TP2 info501
+
+Kevin Traini
+
+## Question 5 :
+
+Les 3 fonctions les plus appelées sont dans l'ordre :
+1. `is_non_false()`
+2. `check_sol()`
+3. `backtrack_naive()` 
