@@ -242,10 +242,12 @@ int update_watch_lists(formula_t *F, sol_t *S, watchlist_t *W, activelist_t *A, 
 // returns the index (in Lit array) of this literal on success
 // returns -1 if lit was the last non-false literal in the clause
 int new_watching_literal(formula_t *F, sol_t *S, int cl) {
-    for (int i = F->Cl[cl]; i < F->Cl[cl + 1]; ++i) {
+    for (int i = F->Cl[cl] + 1; i < F->Cl[cl + 1]; ++i) {
         int state = S->State[VARIABLE(F->Lit[i])];
-        if (state != FALSE) {
-            return i + 1 >= F->Cl[cl + 1] ? -1 : i + 1;
+        int sign = SIGN(F->Lit[i]);
+        if ((sign && (state == TRUE || state == TRUE_WAS_FALSE)) ||
+            (!sign && (state == FALSE || state == FALSE_WAS_TRUE)) || state == UNSET) {
+            return i;
         }
     }
     return -1;
