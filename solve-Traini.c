@@ -126,7 +126,7 @@ int solve(formula_t *F, sol_t *S, watchlist_t *W, activelist_t *A, int BCP) {
             // (in states 2, 3, the variable had already been removed)
             int state = S->State[current_var];
             if (state == FALSE || state == TRUE) { // == 0 || == 1
-                pop_active(A);
+                assert(pop_active(A) == current_var);
             }
         }
 
