@@ -1,25 +1,27 @@
 #include "sat.h"
 
 // print the formula in CNF
-void print_CNF(formula_t* F)
-{
-    (void) F; // to remove unused argument warning
+void print_CNF(formula_t *F) {
+    for (int i = 0; i < F->nb_cl; ++i) {
+        for (int j = F->Cl[i]; j < F->Cl[i+1]; ++j) {
+            printf("%d ", LIT2INT(F->Lit[j]));
+        }
+        printf("\n");
+    }
 }
 
 // check if a solution is indeed a solution
-int is_solution(formula_t* F, sol_t* S)
-{
-    (void)F; // to remove unused argument warning
-    (void)S; // to remove unused argument warning
+int is_solution(formula_t *F, sol_t *S) {
+    (void) F; // to remove unused argument warning
+    (void) S; // to remove unused argument warning
     return 0;
 }
 
-int check_sol(formula_t* F, sol_t* S)
-{
+int check_sol(formula_t *F, sol_t *S) {
     (void) F;  // pour supprimer le warning "unused variable"
     (void) S;  // pour supprimer le warning "unused variable"
     char SET[1 + F->nb_var];
-    (void)SET;
+    (void) SET;
     for (int i = 0; i <= F->nb_var; i++)
         SET[i] = 0;
 
@@ -35,8 +37,7 @@ int check_sol(formula_t* F, sol_t* S)
 }
 
 // main function: look for a solution to satisfy the global formula
-int solve(formula_t* F, sol_t* S, watchlist_t* W, activelist_t* A, int BCP)
-{
+int solve(formula_t *F, sol_t *S, watchlist_t *W, activelist_t *A, int BCP) {
 
     int cpt = 0;
 
@@ -60,7 +61,7 @@ int solve(formula_t* F, sol_t* S, watchlist_t* W, activelist_t* A, int BCP)
                 S->State[current_var] = W->Head[current_var][0] == EOL || W->Head[current_var][1] != EOL;
 
             } else if (BCP == 0) { // if there is an active list but we don't do constraint propagation,
-                                   // we take the first active variable
+                // we take the first active variable
 
                 if (is_empty_active(A)) {
                     // if there are no active variable, we've actually finished! The formula is satisfiable...
@@ -72,7 +73,7 @@ int solve(formula_t* F, sol_t* S, watchlist_t* W, activelist_t* A, int BCP)
                 S->State[current_var] = W->Head[current_var][0] == EOL || W->Head[current_var][1] != EOL;
 
             } else { // if there is an active list and we do constraint propagation (DPLL), we look for a forced literal
-                     // (a unit clause)
+                // (a unit clause)
 
                 if (is_empty_active(A)) {
                     // if there are no active variable, we've actually finished! The formula is satisfiable...
@@ -143,8 +144,7 @@ int solve(formula_t* F, sol_t* S, watchlist_t* W, activelist_t* A, int BCP)
 
 // given a partial solution, backtrack to the last position where a choice was made.
 // the return value is the new index for the last variable in Sol, but this value is also updated inside S->
-int backtrack(sol_t* S, watchlist_t* W, activelist_t* A)
-{
+int backtrack(sol_t *S, watchlist_t *W, activelist_t *A) {
     (void) W; // to remove unused argument warning
 
     // states 0 and 1 correspond to variables that have been tested on a single value. We can stop
@@ -175,8 +175,7 @@ int backtrack(sol_t* S, watchlist_t* W, activelist_t* A)
 // if no other literal can watch the clause, it means the clause
 // becomes false and we'll need to backtrack
 // NOTE: returns 0 in case an empty clause is found
-int update_watch_lists(formula_t* F, sol_t* S, watchlist_t* W, activelist_t* A, int lit)
-{
+int update_watch_lists(formula_t *F, sol_t *S, watchlist_t *W, activelist_t *A, int lit) {
     int var = VARIABLE(lit);
 
     int next_cl;
@@ -229,8 +228,7 @@ int update_watch_lists(formula_t* F, sol_t* S, watchlist_t* W, activelist_t* A, 
 // look for a new literal to serve as the watcher for clause ``cl``
 // returns the index (in Lit array) of this literal on success
 // returns -1 if lit was the last non-false literal in the clause
-int new_watching_literal(formula_t* F, sol_t* S, int cl)
-{
+int new_watching_literal(formula_t *F, sol_t *S, int cl) {
     (void) F; // to remove unused argument warning
     (void) S; // to remove unused argument warning
     (void) cl; // to remove unused argument warning
@@ -239,8 +237,7 @@ int new_watching_literal(formula_t* F, sol_t* S, int cl)
 
 // is the given clause a unit clause?
 // NOTE: we assume the leading literal is unset
-int is_unit(formula_t* F, sol_t* S, int cl)
-{
+int is_unit(formula_t *F, sol_t *S, int cl) {
     assert(S->State[VARIABLE(F->Lit[F->Cl[cl]])] == UNSET);
     (void) F; // to remove unused argument warning
     (void) S; // to remove unused argument warning
